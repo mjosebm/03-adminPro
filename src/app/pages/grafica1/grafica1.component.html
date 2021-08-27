@@ -1,12 +1,36 @@
 <div class="row">
     <div class="col-6">
-        <div class="card">
-            <div class="card-body">
-                <h4>Sales</h4>
-                <div style="display: block;">
-                    <canvas id="myChart" width="700" height="250" #mychart></canvas>
-                </div>
-            </div>
-        </div>
+        <app-dona
+            title="Ventas"
+            [labels] = "labels1"
+            [data] = "data1"
+            [colors] = "colors1"
+            
+            ></app-dona>
+    </div>
+    <div class="col-6">
+        <app-dona
+            title="Compras"
+            [labels] = "labels2"
+            [data] = "data2"
+            [colors] = "colors2"></app-dona>
+    </div>
+</div>
+<div class="row">
+    <div class="col-6">
+        <app-dona
+            title="Cambios"
+            [labels] = "labels3"
+            [data] = "data3"
+            [colors] = "colors3"
+        ></app-dona>
+    </div>
+    <div class="col-6">
+        <app-dona
+        title="Stock"
+            [labels] = "labels4"
+            [data] = "data4"
+            [colors] = "colors4"
+            ></app-dona>
     </div>
 </div>

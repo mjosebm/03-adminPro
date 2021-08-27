@@ -4,40 +4,25 @@ import { Chart } from 'chart.js';
 @Component({
   selector: 'app-grafica1',
   templateUrl: './grafica1.component.html',
-  styleUrls: [ './grafica1.component.css' ]
+  styles: []
 })
 export class Grafica1Component {
+  
+labels1 = ['Red','Blue','Yellow'];
+data1 = [300, 50, 100];
+colors1 = ['rgb(255, 99, 132)','rgb(54, 162, 235)','rgb(255, 205, 86)'];
 
-  constructor() { }
+labels2 = ['Red','Blue','Yellow'];
+data2 = [300, 50, 100];
+colors2 = ['rgb(255, 99, 132)','rgb(54, 162, 235)','rgb(255, 205, 86)'];
 
-  canvas: any;
-  ctx: any;
-  @ViewChild('mychart') mychart:any;
+labels3 = ['Red','Blue','Yellow'];
+data3 = [300, 50, 100];
+colors3 = ['rgb(255, 99, 132)','rgb(54, 162, 235)','rgb(255, 205, 86)'];
 
-  ngAfterViewInit() {
-    this.canvas = this.mychart.nativeElement; 
-    this.ctx = this.canvas.getContext('2d');
-
-    new Chart(this.ctx, {
-      type: 'doughnut',
-      data: {
-        labels: [
-          'Red',
-          'Blue',
-          'Yellow'
-        ],
-        datasets: [{
-          label: 'My First Dataset',
-          data: [300, 50, 100],
-          backgroundColor: [
-            'rgb(255, 99, 132)',
-            'rgb(54, 162, 235)',
-            'rgb(255, 205, 86)'
-          ]
-        }]
-      },
-  });
-  }
+labels4 = ['Red','Blue','Yellow'];
+data4 = [300, 50, 100];
+colors4 = ['rgb(255, 99, 132)','rgb(54, 162, 235)','rgb(255, 205, 86)'];
 
   
 }
