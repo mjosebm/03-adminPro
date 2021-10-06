@@ -1,6 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Observable, interval, Subscription } from 'rxjs';
-import { retry, take, map, filter } from 'rxjs/operators';
+import { take, map, filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-rxjs',
