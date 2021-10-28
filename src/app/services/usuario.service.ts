@@ -32,4 +32,13 @@ export class UsuarioService {
       })
     )
   }
+
+  googleLogin( googleToken : any ){
+    return this.http.post(`${ base_url }/login/google`, { googleToken })
+    .pipe(
+      tap( (resp : any) => {
+        localStorage.setItem('token', resp.token)
+      })
+    )
+  }
 }
