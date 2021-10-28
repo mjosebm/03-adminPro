@@ -14,6 +14,7 @@ const base_url = environment.base_url;
 })
 export class UsuarioService {
 
+
   constructor(private http : HttpClient) { }
 
   crearUsuario(formData: RegisterForm ){
@@ -23,6 +24,10 @@ export class UsuarioService {
       })
     )
 
+  }
+
+  validarToken() {
+    const token = localStorage.getItem('token') || '';
   }
 
   login( formData: LoginForm){
