@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import swal from 'sweetalert2';
@@ -21,7 +21,7 @@ export class LoginComponent implements OnInit {
     remember: [false]
   });
 
-  constructor(private route: Router, private fb: FormBuilder, private usuarioService: UsuarioService) { }
+  constructor(private route: Router, private fb: FormBuilder, private usuarioService: UsuarioService, private ngZone: NgZone) { }
   ngOnInit(): void {
     this.renderButton();
   }
@@ -29,6 +29,8 @@ export class LoginComponent implements OnInit {
 
   login() {
     this.usuarioService.login(this.loginForm.value).subscribe(resp => {
+
+
 
       if (this.loginForm.get('remember')?.value) {
         localStorage.setItem('email', this.loginForm.get('email')?.value);
@@ -38,13 +40,16 @@ export class LoginComponent implements OnInit {
         console.log('Sesión iniciada con éxito, no remember');
       }
 
+      // Navegar al Dashboard
+      this.route.navigateByUrl('/');
+
     },
       (err) => {
         //Si sucede un Error
         swal.fire('Error', err.error.msg, 'error');
       });
 
-    // this.route.navigateByUrl('/');
+
   }
 
   renderButton() {
@@ -59,27 +64,30 @@ export class LoginComponent implements OnInit {
     this.startApp();
   }
 
-  startApp() {
-    gapi.load('auth2', () => {
-      // Retrieve the singleton for the GoogleAuth library and set up the client.
-      this.auth2 = gapi.auth2.init({
-        client_id: '605386480090-5953hmbuha0n0sbu6rgc2htr9pjbuu5g.apps.googleusercontent.com',
-        cookiepolicy: 'single_host_origin',
-        // Request scopes in addition to 'profile' and 'email'
-        //scope: 'additional_scope'
-      });
-      this.attachSignin(document.getElementById('my-signin2'));
-    });
+  async startApp() {
+
+    await this.usuarioService.googleInit();
+    this.auth2 = this.usuarioService.auth2;
+    this.attachSignin(document.getElementById('my-signin2'));
+
   }
 
   attachSignin(element: any) {
     this.auth2.attachClickHandler(element, {},
       (googleUser: any) => {
         const id_token = googleUser.getAuthResponse().id_token;
-        // console.log(id_token);
-        this.usuarioService.googleLogin(id_token).subscribe();
+        this.usuarioService.googleLogin(id_token).subscribe(resp => {
 
-        // TODO:  Mover al dashboard
+          this.ngZone.run(() => {
+
+            // Navegar al Dashboard
+            this.route.navigateByUrl('/');
+
+            console.log('Sesión exitosa con google');
+
+          })
+        });
+
 
       }, (error: any) => {
         alert(JSON.stringify(error, undefined, 2));
