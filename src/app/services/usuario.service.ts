@@ -9,6 +9,7 @@ import { environment } from 'src/environments/environment';
 
 import { LoginForm } from '../interfaces/login-form.interface';
 import { RegisterForm } from '../interfaces/register-form.interface';
+import { Usuario } from '../models/usuario.model';
 
 declare const gapi: any;
 
@@ -20,6 +21,7 @@ const base_url = environment.base_url;
 export class UsuarioService {
 
   public auth2: any;
+  public usuario!: Usuario;
 
 
   constructor(private http: HttpClient, private router: Router, private ngZone: NgZone) {
@@ -37,10 +39,12 @@ export class UsuarioService {
         'x-token': token
       }
     }).pipe(
-      tap((resp: any) => {
+      map((resp: any) => {
+        const { name, email, google, img, role, uid } = resp.usuario;
+        this.usuario = new Usuario(name, email, '', google, img, role, uid);
         localStorage.setItem('token', resp.token);
+        return true;
       }),
-      map(resp => true),
       catchError(error => of(false))
     );
   }
@@ -84,7 +88,7 @@ export class UsuarioService {
           client_id: '605386480090-5953hmbuha0n0sbu6rgc2htr9pjbuu5g.apps.googleusercontent.com',
           cookiepolicy: 'single_host_origin'
         });
-        
+
         resolve();
       });
 
