@@ -30,13 +30,20 @@ export class UsuarioService {
 
   }
 
+  get token() : string {
+    return localStorage.getItem('token') || '';
+
+  }
+  get uid() : string {
+    return this.usuario.uid || '';
+  }
+
 
   validarToken(): Observable<boolean> {
-    const token = localStorage.getItem('token') || '';
 
     return this.http.get(`${base_url}/login/renew`, {
       headers: {
-        'x-token': token
+        'x-token': this.token
       }
     }).pipe(
       map((resp: any) => {
@@ -55,6 +62,21 @@ export class UsuarioService {
         localStorage.setItem('token', resp.token)
       })
     )
+
+  }
+
+  actualizarUsuario(data: { email:string, name: string, role: string } ){
+
+    data = {
+      ...data, 
+      role: this.usuario.role!
+    };
+
+    return this.http.put(`${base_url}/usuarios/${ this.uid}`, data, {
+      headers: {
+        'x-token': this.token
+      }
+    })
 
   }
 

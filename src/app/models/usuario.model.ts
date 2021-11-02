@@ -18,6 +18,7 @@ export class Usuario {
 
         if (this.img?.includes('https')) {
             return this.img;
+            
         }
 
         if (this.img) {
