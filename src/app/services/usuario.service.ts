@@ -6,6 +6,7 @@ import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from "rxjs/operators";
 
 import { environment } from 'src/environments/environment';
+import { CargarUsuariosResp } from '../interfaces/cargar-usuarios.interface';
 
 import { LoginForm } from '../interfaces/login-form.interface';
 import { RegisterForm } from '../interfaces/register-form.interface';
@@ -30,22 +31,26 @@ export class UsuarioService {
 
   }
 
-  get token() : string {
+  get token(): string {
     return localStorage.getItem('token') || '';
 
   }
-  get uid() : string {
+  get uid(): string {
     return this.usuario.uid || '';
+  }
+
+  get headers() {
+    return {
+      headers: {
+        'x-token': this.token
+      }
+    }
   }
 
 
   validarToken(): Observable<boolean> {
 
-    return this.http.get(`${base_url}/login/renew`, {
-      headers: {
-        'x-token': this.token
-      }
-    }).pipe(
+    return this.http.get(`${base_url}/login/renew`, this.headers).pipe(
       map((resp: any) => {
         const { name, email, google, img, role, uid } = resp.usuario;
         this.usuario = new Usuario(name, email, '', google, img, role, uid);
@@ -65,18 +70,14 @@ export class UsuarioService {
 
   }
 
-  actualizarUsuario(data: { email:string, name: string, role: string } ){
+  actualizarUsuario(data: { email: string, name: string, role: string }) {
 
     data = {
-      ...data, 
+      ...data,
       role: this.usuario.role!
     };
 
-    return this.http.put(`${base_url}/usuarios/${ this.uid}`, data, {
-      headers: {
-        'x-token': this.token
-      }
-    })
+    return this.http.put(`${base_url}/usuarios/${this.uid}`, data, this.headers)
 
   }
 
@@ -87,18 +88,6 @@ export class UsuarioService {
       })
     )
   }
-
-  logout() {
-    localStorage.removeItem('token');
-    this.auth2.signOut().then(() => {
-      this.ngZone.run(() => {
-
-        this.router.navigateByUrl('/login');
-
-      })
-    });
-  }
-
 
   googleInit() {
 
@@ -125,4 +114,24 @@ export class UsuarioService {
         })
       )
   }
+
+  logout() {
+    localStorage.removeItem('token');
+    this.auth2.signOut().then(() => {
+      this.ngZone.run(() => {
+
+        this.router.navigateByUrl('/login');
+
+      })
+    });
+  }
+
+  cargarUsuarios(desde: number = 0, numRegistros: number = 5) {
+    const url = `${base_url}/usuarios?desde=${desde}&numRegistros=${numRegistros}`;
+    return this.http.get<CargarUsuariosResp>(url, this.headers);
+
+  }
+
+
+
 }
